@@ -9,4 +9,4 @@ A simple program for the creation of maps used in platforming games. Requires a 
 <p>Ctrl + S: Save current map
 
 Note:
-Sometimes the shift, alt, and down buttons get stuck. If this happens, simply press the button again to unstick.
+<p>Sometimes the shift, alt, and down buttons get stuck. If this happens, simply press the button again to unstick.
