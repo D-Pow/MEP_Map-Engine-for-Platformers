@@ -8,5 +8,5 @@ A simple program for the creation of maps used in platforming games. Requires a 
 <p>Ctrl + O: Open a previously saved map
 <p>Ctrl + S: Save current map
 
-Note:
+<p>Note:
 <p>Sometimes the shift, alt, and down buttons get stuck. If this happens, simply press the button again to unstick.
