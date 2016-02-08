@@ -63,19 +63,6 @@ public class MapPane extends Pane{
         
         initTiles();
         initMap();
-        
-        /*Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true){
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {}
-                }
-            }
-        });
-        t.start();
-        */
     }
     
     public void loadOldMap(int[][] oldMap){
