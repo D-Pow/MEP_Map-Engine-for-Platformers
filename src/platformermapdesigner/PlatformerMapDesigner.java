@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author DP
+ * @author dPow, 2-7-16
  */
 public class PlatformerMapDesigner extends Application{
     public int WIDTH = 800;

@@ -68,7 +68,9 @@ public class MapPane extends Pane{
             @Override
             public void run() {
                 while (true){
-                    sleep();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {}
                 }
             }
         });
@@ -192,7 +194,7 @@ public class MapPane extends Pane{
             origTileImage = ImageIO.read(file);
             tileSize = origTileImage.getHeight()/numTileRows;
             //Minus 1 because tileSet matrix starts at index 0
-            numTileColumns = origTileImage.getWidth()/tileSize - 1;
+            numTileColumns = origTileImage.getWidth()/tileSize;
             tileSet = new BufferedImage[numTileRows][numTileColumns];
             for (int i = 0; i < numTileColumns; i++){
                 tileSet[0][i] = origTileImage.getSubimage(
