@@ -5,6 +5,7 @@ import javafx.scene.input.MouseEvent;
 import platformermapdesigner.MapPane;
 
 /**
+ * Used only for testing mouse locations; not used in final program.
  *
  * @author DP
  */
@@ -21,10 +22,10 @@ public class MouseMovedListener implements EventHandler<MouseEvent>{
     public void handle(MouseEvent e) {
         if (counter == 100){
         if (e.getX() > mp.getHeight() - mp.numTileRows*mp.tileSize){
-            System.out.println("OUtsis");
+            System.out.println("Outside");
         }
         if (e.getX() < mp.getHeight() - mp.numTileRows*mp.tileSize){
-            System.out.println("INside");
+            System.out.println("Inside");
         }
         counter = 0;
         }
