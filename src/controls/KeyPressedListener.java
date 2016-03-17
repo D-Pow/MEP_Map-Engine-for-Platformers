@@ -30,7 +30,13 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
             System.err.println(ex.getClass());
         }
     }
-
+    
+    /**
+     * Adds keyboard controls to the program.
+     * 
+     * @param k 
+     *          The key pressed
+     */
     @Override
     public void handle(KeyEvent k) {
         if (k.getCode() == KeyCode.CONTROL){
@@ -101,6 +107,13 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         }
     }
     
+    /**
+     * Moves the entire map, including the outline and the
+     * containing tiles, in the direction specified by the user.
+     * 
+     * @param direction 
+     *          Direction that the map will move
+     */
     public void moveMap(String direction){
         int dx = 0;
         int dy = 0;
@@ -112,7 +125,7 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
                 dx = 1;
                 break;
             case "Down":
-                dy = 3;
+                dy = 3; //Extra large to counteract the map getting stuck
                 break;
             case "Left":
                 dx = -1;
@@ -132,6 +145,9 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         }
     }
     
+    /**
+     * Extends the map from the right.
+     */
     public void growMapColRight(){
         int oldRow = mp.map.length;
         int oldCol = mp.map[0].length;
@@ -149,6 +165,9 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         mp.mapOutline.setWidth(mp.mapOutline.getWidth() + mp.tileSize);
     }
     
+    /**
+     * Extends the map from the left.
+     */
     public void growMapColLeft(){
         int oldRow = mp.map.length;
         int oldCol = mp.map[0].length;
@@ -167,6 +186,9 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         mp.mapOutline.setX(mp.mapOutline.getX() - mp.tileSize);
     }
     
+    /**
+     * Extends the map from the top.
+     */
     public void growMapRowUp(){
         int oldRow = mp.map.length;
         int oldCol = mp.map[0].length;
@@ -189,6 +211,9 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         mp.mapOutline.setY(mp.mapOutline.getY() - mp.tileSize);
     }
     
+    /**
+     * Extends the map from the bottom.
+     */
     public void growMapRowDown(){
         int oldRow = mp.map.length;
         int oldCol = mp.map[0].length;
@@ -210,6 +235,9 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         mp.mapOutline.setHeight(mp.mapOutline.getHeight() + mp.tileSize);
     }
     
+    /**
+     * Shrinks the map from the right.
+     */
     public void shrinkMapColRight(){
         int oldRow = mp.map.length;
         int oldCol = mp.map[0].length;
@@ -228,6 +256,9 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         mp.updateConstructedMap(null);
     }
     
+    /**
+     * Shrinks the map from the left.
+     */
     public void shrinkMapColLeft(){
         int oldRow = mp.map.length;
         int oldCol = mp.map[0].length;
@@ -246,6 +277,9 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         mp.updateConstructedMap(null);
     }
     
+    /**
+     * Shrinks the map from the top.
+     */
     public void shrinkMapRowUp(){
         int oldRow = mp.map.length;
         int oldCol = mp.map[0].length;
@@ -264,6 +298,9 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         mp.updateConstructedMap(null);
     }
     
+    /**
+     * Shrinks the map from the bottom.
+     */
     public void shrinkMapRowDown(){
         int oldRow = mp.map.length;
         int oldCol = mp.map[0].length;
@@ -281,6 +318,10 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         mp.updateConstructedMap(null);
     }
     
+    /**
+     * Gives the user the option to save their created map in
+     * a location specified by them.
+     */
     public void saveMap(){
         JFileChooser saver = new JFileChooser("."){
             @Override
@@ -321,6 +362,10 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         }
     }
     
+    /**
+     * Gives the user an option to load a previously-created
+     * map.
+     */
     public void loadMap(){
         JFileChooser opener = new JFileChooser("."){
             @Override

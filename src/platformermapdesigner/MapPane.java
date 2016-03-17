@@ -25,7 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class MapPane extends Pane{
+public class MapPane extends Pane {
     //Functionality
     //map is the matrix telling which tile to use where
     public int[][] map; //[rows,y][col,x]
@@ -60,11 +60,24 @@ public class MapPane extends Pane{
         this.addEventHandler(ScrollEvent.SCROLL, new MouseWheelListener(this));
         this.setFocusTraversable(true);
         this.requestFocus();
-        
-        initTiles();
-        initMap();
+        try{
+            initTiles();
+            initMap();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
     
+    /**
+     * Loads a map from file: converts the values from the passed
+     * int matrix into images given by the tileSet. The value in
+     * the map is the tile number. The matrix is passed to this
+     * method by {@code loadMap()} in the KeyPressedListener class.
+     *  
+     * @param oldMap 
+     *          int matrix holding tile numbers that correspond
+     *          to a specific tile.
+     */
     public void loadOldMap(int[][] oldMap){
         constructedMap.getChildren().clear();
         mapX = tileSize;
@@ -109,10 +122,14 @@ public class MapPane extends Pane{
     }
     
     /**
-     * Ensures that only one image is seen per constructedMap grid unit.
-     * Also, deletes images outside the map outline.
+     * Updates the constructed map by performing the following operations:
+     * 1) Ensures that only one image is seen per constructedMap grid unit,
+     *    so it deletes the old tile image that existed in the location
+     *    that the user newly clicked to add a new tile image
+     * 2) Deletes images outside the map outline.
      * 
-     * @param imageView Image to replace current image in constructedMap
+     * @param imageView
+     *          Image to replace current image in constructedMap
      */
     public void updateConstructedMap(ImageView imageView){
         if (imageView instanceof ImageView){
@@ -161,6 +178,11 @@ public class MapPane extends Pane{
         */
     }
     
+    /**
+     * Repositions the tileOutline in the tile selection pane
+     * at the bottom of the screen so that the user knows which
+     * tile is selected.
+     */
     public void updateCurrentTile(){
         //Notice how newTileX/Y don't have to getX/Y before updating
         //That's because they're in their own pane due to the BorderPane layout
@@ -171,25 +193,30 @@ public class MapPane extends Pane{
     }
     
     /**
-     * Instantiates the tileSet image matrix with
-     * a file.
+     * Instantiates the tileSet images using an image selected
+     * by the user. Given the number of rows that the user
+     * input at the program startup, this automatically calculates
+     * the positions of the individual tile images, and sets the
+     * tileSize for all tiles.
      * 
-     * @param file The file containing the map tiles.
+     * Note: tiles must be designed to be squares.
+     * 
+     * @param file
+     *          The image file containing what will be the map tiles
      */
     public void openTileSet(File file){
         try {
             origTileImage = ImageIO.read(file);
-            tileSize = origTileImage.getHeight()/numTileRows;
+            tileSize = (int) origTileImage.getHeight()/numTileRows;
             //Minus 1 because tileSet matrix starts at index 0
-            numTileColumns = origTileImage.getWidth()/tileSize;
+            numTileColumns = (int) origTileImage.getWidth()/tileSize;
             tileSet = new BufferedImage[numTileRows][numTileColumns];
-            for (int i = 0; i < numTileColumns; i++){
-                tileSet[0][i] = origTileImage.getSubimage(
-                        i*tileSize, 0,
-                        tileSize, tileSize);
-                tileSet[1][i] = origTileImage.getSubimage(
-                        i*tileSize, tileSize,
-                        tileSize, tileSize);
+            for (int row = 0; row < numTileRows; row++) {
+                for (int col = 0; col < numTileColumns; col++) {
+                    tileSet[row][col] = origTileImage.getSubimage(
+                            col * tileSize, row * tileSize,
+                            tileSize, tileSize);
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -217,11 +244,12 @@ public class MapPane extends Pane{
         tileOutline.setStroke(Color.RED);
         tileOutline.setFill(null);
         tileMap.getChildren().add(tileOutline);
-
-        //tileMap.setFocusTraversable(true);
-        //tileMap.addEventHandler(MouseEvent.MOUSE_CLICKED, new TileMouseClickedListener(tileMap, this));
     }
     
+    /**
+     * Sets up the map area using the tile size initialized
+     * in the {@code openTileSet()} method.
+     */
     public void initMap(){
         int mapStartSize = numTileColumns - 2;
         map = new int[(int)mapStartSize/2][mapStartSize];
@@ -239,6 +267,11 @@ public class MapPane extends Pane{
         this.getChildren().addAll(mapOutline, constructedMap);
     }
     
+    /**
+     * Gives the user the option to input the number of rows
+     * in their image containing the map tiles and initiates
+     * the creation of the tileSet.
+     */
     public void initTiles(){
         int answer = JOptionPane.showConfirmDialog(null,
                 "Is your tile image comprised of square tiles,\n"

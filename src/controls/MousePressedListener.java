@@ -8,11 +8,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import platformermapdesigner.MapPane;
 
-/**
- *
- * MousePressed rather than MouseClicked so that a drag feature
- * can be enabled (clicked is pressed and released at once)
- */
 public class MousePressedListener implements EventHandler<MouseEvent>{
     private final MapPane mp;
     private final Rectangle mapOutline;
