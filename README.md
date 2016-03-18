@@ -1,5 +1,5 @@
 # MEP_Map-Engine-for-Platformers
-A simple map designer program for the creation of maps used in 2D platforming games. Requires a premade tile set as a .png or .gif file.
+A simple map designer program for the creation of maps used in 2D platforming games. Requires a premade tile set (that represents the ground and decoration tiles on the playing map) as a .png or .gif file.
 
 #Controls:
 <p>Arrow Keys: Move map
