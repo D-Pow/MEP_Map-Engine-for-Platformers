@@ -11,5 +11,5 @@ A simple map designer program for the creation of maps used in 2D platforming ga
 + Left-click: Place currently selected tile
 + Right-click: Delete the tile clicked on
 
-<p><p>Note:
-<p>Sometimes the shift, alt, and down buttons get stuck. If this happens, simply press the button again to unstick.
+Note:
+* Sometimes the shift, alt, and down buttons get stuck. If this happens, simply press the button again to unstick.
