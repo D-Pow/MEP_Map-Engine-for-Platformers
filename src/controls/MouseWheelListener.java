@@ -7,7 +7,7 @@ import platformermapdesigner.MapPane;
 public class MouseWheelListener implements EventHandler<ScrollEvent>{
     private final MapPane mp;
     private int counter;
-    private final int threshold = 9;
+    private final int threshold = 8;
     
     public MouseWheelListener(MapPane mp){
         this.mp = mp;
