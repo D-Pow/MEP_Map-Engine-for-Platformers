@@ -95,14 +95,10 @@ public class MapPane extends Pane {
                 currentTile = map[row][col] = oldMap[row][col];
                 
                 //Get the right tile from tileSet
-                int tileRow = 0;
-                int tileCol = 0;
-                int selectionIndex = currentTile;
-                while (selectionIndex > numTileColumns - 1){
-                    selectionIndex = selectionIndex - numTileColumns;
-                    tileRow++;
-                }
-                tileCol = selectionIndex;
+                int tileRow = (int) currentTile / numTileColumns;
+                int tileCol = currentTile % numTileColumns;
+                
+                //Get the right image
                 Image image = SwingFXUtils.toFXImage(tileSet[tileRow][tileCol], null);
                 ImageView imageView = new ImageView(image);
                 
