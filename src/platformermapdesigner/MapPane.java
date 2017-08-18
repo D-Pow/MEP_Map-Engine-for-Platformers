@@ -7,8 +7,6 @@ import controls.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -42,7 +40,7 @@ public class MapPane extends Pane {
     public BufferedImage[][] tileSet; //[rows,y][col,x]
     public int currentTile;
     public Rectangle tileOutline; //which tile is selected
-    public Group tileMap = new Group(); //all the images of the tiles aligned correctly
+    public Group tileMap; //all the images of the tiles aligned correctly
     public Rectangle mapOutline;
     
     //Controls
@@ -51,7 +49,6 @@ public class MapPane extends Pane {
     public boolean alt;
     
     public MapPane(int w, int h, Group tileMap){
-        Logger.getGlobal().setLevel(Level.ALL);
         this.tileMap = tileMap;
         tileMap.setFocusTraversable(true);
         this.addEventHandler(KeyEvent.KEY_PRESSED, new KeyPressedListener(this));
@@ -298,6 +295,15 @@ public class MapPane extends Pane {
         int fileChoice = chooser.showOpenDialog(null);
         if (fileChoice == JFileChooser.APPROVE_OPTION){
             openTileSet(chooser.getSelectedFile());
+        }
+    }
+    
+    public void clear() {
+        constructedMap.getChildren().clear();
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                map[i][j] = 0;
+            }
         }
     }
     

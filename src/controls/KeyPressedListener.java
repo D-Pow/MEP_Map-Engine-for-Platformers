@@ -5,12 +5,18 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -103,6 +109,16 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
         if (k.getCode() == KeyCode.S){
             if (mp.ctrl){
                 saveMap();
+            }
+        }
+        if (k.getCode() == KeyCode.E) {
+            if (mp.ctrl){
+                exportMapImage();
+            }
+        }
+        if (k.getCode() == KeyCode.C) {
+            if (mp.ctrl){
+                mp.clear();
             }
         }
     }
@@ -323,42 +339,29 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
      * a location specified by them.
      */
     public void saveMap(){
-        JFileChooser saver = new JFileChooser("."){
-            @Override
-            public void approveSelection(){
-                if (this.getSelectedFile().isDirectory()){
-                    this.setCurrentDirectory(this.getSelectedFile());
+        File saveFile = displayMapChooser();
+        if (saveFile == null) {
+            return;
+        }
+        String path = saveFile.getAbsolutePath();
+        if (!path.endsWith(".map")) {
+            path = path + ".map";
+            saveFile = new File(path);
+        }
+        try (Writer writer = new BufferedWriter(new FileWriter(saveFile))) {
+            //write row length first, then column length
+            writer.write(mp.map.length + "\n");
+            writer.write(mp.map[0].length + "\n");
+            for (int row = 0; row < mp.map.length; row++) {
+                for (int col = 0; col < mp.map[0].length; col++) {
+                    writer.write(String.valueOf(mp.map[row][col]) + " ");
                 }
-                else{
-                    super.approveSelection();
-                }
+                writer.write("\n");
             }
-        };
-        saver.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        saver.setFileFilter(new FileNameExtensionFilter(".map files", "map"));
-        int fileChoice = saver.showSaveDialog(null);
-        if (fileChoice == JFileChooser.APPROVE_OPTION){
-            File saveFile = saver.getSelectedFile();
-            String path = saveFile.getAbsolutePath();
-            if (!path.endsWith(".map")){
-                path = path + ".map";
-                saveFile = new File(path);
-            }
-            try (Writer writer = new BufferedWriter(new FileWriter(saveFile))){
-                //write row length first, then column length
-                writer.write(mp.map.length + "\n");
-                writer.write(mp.map[0].length + "\n");
-                for (int row = 0; row < mp.map.length; row++){
-                    for (int col = 0; col < mp.map[0].length; col++){
-                        writer.write(String.valueOf(mp.map[row][col]) + " ");
-                    }
-                    writer.write("\n");
-                }
-                writer.flush();
-                writer.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            writer.flush();
+            writer.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
     
@@ -367,7 +370,47 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
      * map.
      */
     public void loadMap(){
-        JFileChooser opener = new JFileChooser("."){
+        File file = displayMapChooser();
+        if (file == null) {
+            return;
+        }
+        int[][] tempMap;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            //instantiate the map matrix
+            int mapHeight = Integer.parseInt(reader.readLine());
+            int mapWidth = Integer.parseInt(reader.readLine());
+            tempMap = new int[mapHeight][mapWidth];
+
+            //fill the map matrix
+            for (int row = 0; row < mapHeight; row++) {
+                int col = 0;
+                String line = reader.readLine();
+                String[] nums = line.split("\\s+");
+                for (String s : nums) {
+                    int num = Integer.parseInt(s);
+                    tempMap[row][col] = num;
+                    col++;
+                }
+            }
+            reader.close();
+
+            //load map into mapPane
+            mp.loadOldMap(tempMap);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    private File displayMapChooser() {
+        return displayFileChooser(".map files", "map");
+    }
+    
+    private File displayPictureChooser() {
+        return displayFileChooser(".png files", "png");
+    }
+    
+    private File displayFileChooser(String desc, String... ext) {
+        JFileChooser chooser = new JFileChooser("."){
             @Override
             public void approveSelection(){
                 if (this.getSelectedFile().isDirectory()){
@@ -378,35 +421,33 @@ public class KeyPressedListener implements EventHandler<KeyEvent>{
                 }
             }
         };
-        opener.setFileFilter(new FileNameExtensionFilter(".map files", "map"));
-        opener.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        int[][] tempMap;
-        int fileChoice = opener.showOpenDialog(null);
+        chooser.setApproveButtonText("Select");
+        chooser.setFileFilter(new FileNameExtensionFilter(desc, ext));
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        int fileChoice = chooser.showOpenDialog(null);
         if (fileChoice == JFileChooser.APPROVE_OPTION){
-            try (BufferedReader reader = new BufferedReader(new FileReader(opener.getSelectedFile()))){
-                //instantiate the map matrix
-                int mapHeight = Integer.parseInt(reader.readLine());
-                int mapWidth = Integer.parseInt(reader.readLine());
-                tempMap = new int[mapHeight][mapWidth];
-                
-                //fill the map matrix
-                for (int row = 0; row < mapHeight; row++){
-                    int col = 0;
-                    String line = reader.readLine();
-                    String[] nums = line.split("\\s+");
-                    for (String s : nums){
-                        int num = Integer.parseInt(s);
-                        tempMap[row][col] = num;
-                        col++;
-                    }
-                }
-                reader.close();
-                
-                //load map into mapPane
-                mp.loadOldMap(tempMap);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            return chooser.getSelectedFile();
+        }
+        return null;
+    }
+    
+    public void exportMapImage() {
+        File file = displayPictureChooser();
+        if (file == null) {
+            return;
+        }
+        String path = file.getAbsolutePath();
+        if (!path.endsWith(".png")) {
+            path += ".png";
+            file = new File(path);
+        }
+        SnapshotParameters params = new SnapshotParameters();
+        params.setFill(Color.TRANSPARENT);  //set transparent background
+        WritableImage snapshot = mp.constructedMap.snapshot(params, null);
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", file);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
     
